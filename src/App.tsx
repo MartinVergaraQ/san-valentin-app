@@ -39,7 +39,6 @@ export default function App() {
     },
   ];
 
-  // ----------------------
   const [step, setStep] = useState<Step>("intro1");
 
   // Botón NO escapa
@@ -64,6 +63,23 @@ export default function App() {
 
   // Reveal de carta + galería
   const [reveal, setReveal] = useState(0);
+
+  // ✅ iOS Safari: 100vh es inestable por barra del navegador
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+
+    setVh();
+    window.addEventListener("resize", setVh);
+    window.addEventListener("orientationchange", setVh);
+
+    return () => {
+      window.removeEventListener("resize", setVh);
+      window.removeEventListener("orientationchange", setVh);
+    };
+  }, []);
 
   const daysTogether = useMemo(() => {
     return daysBetween(FECHA_INICIO, new Date());
@@ -170,6 +186,7 @@ export default function App() {
     };
   }, [step]);
 
+  // ✅ Lock scroll iOS cuando modal está abierto (lo tuyo está bien)
   useEffect(() => {
     if (!giftOpen) return;
 
@@ -193,7 +210,6 @@ export default function App() {
       window.scrollTo(0, scrollY);
     };
   }, [giftOpen]);
-
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -292,18 +308,14 @@ export default function App() {
             {step === "intro1" && (
               <>
                 <h1>Oye {NOMBRE}…</h1>
-                <p className="subtitle">
-                  Tengo algo importante que decirte. No es una mentira. Por una vez.
-                </p>
+                <p className="subtitle">Tengo algo importante que decirte. No es una mentira. Por una vez.</p>
               </>
             )}
 
             {step === "intro2" && (
               <>
                 <h1>Gracias por todo ❤️</h1>
-                <p className="subtitle">
-                  Por tu paciencia, por tu cariño, y por aguantar mis momentos.
-                </p>
+                <p className="subtitle">Por tu paciencia, por tu cariño, y por aguantar mis momentos.</p>
               </>
             )}
 
@@ -378,9 +390,7 @@ export default function App() {
           <div className="screen">
             <div className="pill">Desbloqueo secreto 🔐</div>
             <h1>Antes de pasar…</h1>
-            <p className="subtitle">
-              Solo para asegurarme que eres tú y no alguien robándome el link 😌
-            </p>
+            <p className="subtitle">Solo para asegurarme que eres tú y no alguien robándome el link 😌</p>
 
             <div className="quizBox">
               <div className="quizQ">{quizQuestions[quizIndex]?.q}</div>
@@ -429,20 +439,20 @@ export default function App() {
 
             <div className="loveLetter">
               <p className={`reveal ${reveal >= 1 ? "show" : ""}`}>
-                {NOMBRE}, gracias por ser mi lugar seguro. Me encanta tu forma de ser, tu sonrisa,
-                y cómo haces que todo se sienta más bonito.
+                {NOMBRE}, gracias por ser mi lugar seguro. Me encanta tu forma de ser, tu sonrisa, y cómo
+                haces que todo se sienta más bonito.
               </p>
 
               <p className={`reveal ${reveal >= 2 ? "show" : ""}`}>
-                Mi recuerdo favorito: <i>cuando fuimos al Jardín Japonés</i>. Y otro que siempre
-                me da risa: <i>en el Cerro Santa Lucía, cuando todavía éramos amigos</i> 😅.
+                Mi recuerdo favorito: <i>cuando fuimos al Jardín Japonés</i>. Y otro que siempre me da risa:{" "}
+                <i>en el Cerro Santa Lucía, cuando todavía éramos amigos</i> 😅.
               </p>
 
               <p className={`reveal ${reveal >= 3 ? "show" : ""}`}>
                 Y mi plan:{" "}
                 <i>
-                  pasar la tarde juntos comiendo helados (McFlurry, obvio)… y después quedarnos a dormir
-                  juntitos dos noches: <b>13 y 14 de febrero</b> 💞
+                  pasar la tarde juntos comiendo helados (McFlurry, obvio)… y después quedarnos a dormir juntitos
+                  dos noches: <b>13 y 14 de febrero</b> 💞
                 </i>
                 .
               </p>
@@ -451,9 +461,7 @@ export default function App() {
                 Y sí… también quiero una vida contigo llena de <i>gatitos</i> 🐾😺 (porque obvio).
               </p>
 
-              <p className={`signature reveal ${reveal >= 3 ? "show" : ""}`}>
-                Con amor, tu programador 💘
-              </p>
+              <p className={`signature reveal ${reveal >= 3 ? "show" : ""}`}>Con amor, tu programador 💘</p>
             </div>
 
             <div className="actions">
@@ -487,9 +495,7 @@ export default function App() {
             </div>
 
             <div className="modalBody">
-              {REGALO.type === "video" && (
-                <video className="giftMedia" src={REGALO.src} controls playsInline />
-              )}
+              {REGALO.type === "video" && <video className="giftMedia" src={REGALO.src} controls playsInline />}
 
               <p className="tiny" style={{ marginTop: 10 }}>
                 Si llegaste hasta aquí, ya gané. Te amo ❤️
@@ -500,9 +506,7 @@ export default function App() {
       )}
 
       {!captureMode && (
-        <footer className="footer">
-          Hecho con amor y con la mínima cantidad de dignidad profesional.
-        </footer>
+        <footer className="footer">Hecho con amor y con la mínima cantidad de dignidad profesional.</footer>
       )}
     </div>
   );
