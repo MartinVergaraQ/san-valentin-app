@@ -213,16 +213,24 @@ h1 {
 .toast {
   position: absolute;
   left: 50%;
-  bottom: 18px;
+  top: 14px;
+  /* 👈 mejor arriba para que no lo tape el Sí */
+  bottom: auto;
+  /* 👈 anulamos el bottom */
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.82);
   color: white;
   padding: 10px 12px;
   border-radius: 14px;
   font-size: 12px;
   text-align: center;
   max-width: 92%;
+  z-index: 30;
+  /* 👈 MÁS alto que .no (3) y .bigYes (2) */
+  pointer-events: none;
+  /* 👈 para que no moleste al tocar */
 }
+
 
 /* Quiz */
 .quizBox {

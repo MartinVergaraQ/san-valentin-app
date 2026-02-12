@@ -99,7 +99,7 @@ export default function App() {
     return options[Math.min(noCount, options.length - 1)];
   }, [noCount]);
 
-  const yesScale = useMemo(() => Math.min(1 + noCount * 0.06, 1.6), [noCount]);
+  const yesScale = useMemo(() => Math.min(1 + noCount * 0.06, 1.35), [noCount]);
 
   const introIndex = useMemo(() => {
     if (step === "intro1") return 1;
