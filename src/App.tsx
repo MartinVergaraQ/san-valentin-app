@@ -21,11 +21,12 @@ export default function App() {
   const FECHA_INICIO = new Date("2025-06-06");
   const ENABLE_QUIZ = true;
 
-  // Regalo: pon un archivo en /public, ej: /regalo.jpg o /regalo.mp4 o /regalo.mp3
-  const REGALO = { type: "video" as const, src: "/regalo.mp4" };
+  // ✅ Base real (en GitHub Pages es /san-valentin-app/)
+  const BASE = import.meta.env.BASE_URL;
 
-  // Música fondo (opcional) en /public/love.mp3
-  const MUSIC_SRC = "/love.mp3";
+  // ✅ Assets desde /public (respetando base)
+  const REGALO = { type: "video" as const, src: `${BASE}regalo.mp4` };
+  const MUSIC_SRC = `${BASE}love.mp3`;
 
   const quizQuestions = [
     {
@@ -61,7 +62,7 @@ export default function App() {
   const [giftOpen, setGiftOpen] = useState(false);
   const [captureMode, setCaptureMode] = useState(false);
 
-  // Reveal de carta + galería (nivel “top”)
+  // Reveal de carta + galería
   const [reveal, setReveal] = useState(0);
 
   const daysTogether = useMemo(() => {
@@ -82,10 +83,8 @@ export default function App() {
     return options[Math.min(noCount, options.length - 1)];
   }, [noCount]);
 
-  // Botón "Sí" crece con cada intento de "No"
   const yesScale = useMemo(() => Math.min(1 + noCount * 0.06, 1.6), [noCount]);
 
-  // Progress mini historia
   const introIndex = useMemo(() => {
     if (step === "intro1") return 1;
     if (step === "intro2") return 2;
@@ -111,7 +110,6 @@ export default function App() {
     setNoCount((c) => c + 1);
   }
 
-  // posición inicial del "No"
   useEffect(() => {
     if (step !== "ask") return;
     const t = setTimeout(() => moveNoButton(), 50);
@@ -119,7 +117,6 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step]);
 
-  // Easter egg del "No"
   useEffect(() => {
     if (noCount === 8) {
       setShowNoToast(true);
@@ -135,7 +132,6 @@ export default function App() {
     }
   }, [noCount, ENABLE_QUIZ]);
 
-  // Corazones cuando dijo que sí (y NO en modo captura)
   useEffect(() => {
     if (step !== "yes" || captureMode) return;
 
@@ -154,7 +150,7 @@ export default function App() {
     return () => clearInterval(timer);
   }, [step, captureMode]);
 
-  // Reveal de carta por bloques + galería después (cinemático, no cringe)
+  // Reveal por bloques
   useEffect(() => {
     if (step !== "yes") {
       setReveal(0);
@@ -164,7 +160,7 @@ export default function App() {
     const t1 = window.setTimeout(() => setReveal(1), 180);
     const t2 = window.setTimeout(() => setReveal(2), 650);
     const t3 = window.setTimeout(() => setReveal(3), 1150);
-    const t4 = window.setTimeout(() => setReveal(4), 1600); // galería
+    const t4 = window.setTimeout(() => setReveal(4), 1600);
 
     return () => {
       window.clearTimeout(t1);
@@ -174,7 +170,6 @@ export default function App() {
     };
   }, [step]);
 
-  // iOS: bloquear scroll cuando modal abierto
   useEffect(() => {
     if (!giftOpen) return;
     const prev = document.body.style.overflow;
@@ -184,7 +179,6 @@ export default function App() {
     };
   }, [giftOpen]);
 
-  // Escape para cerrar modal
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setGiftOpen(false);
@@ -258,7 +252,6 @@ export default function App() {
   return (
     <div className={`page ${captureMode ? "capture" : ""}`}>
       <div className="card">
-        {/* Barra superior mini */}
         {(step === "ask" || step === "quiz" || step === "yes") && (
           <div className="topbar">
             <button className="chip" onClick={toggleMusic}>
@@ -270,7 +263,6 @@ export default function App() {
           </div>
         )}
 
-        {/* STORY */}
         {(step === "intro1" || step === "intro2" || step === "intro3") && (
           <div className="screen">
             <div className="pill">Mini historia 💌</div>
@@ -321,7 +313,6 @@ export default function App() {
           </div>
         )}
 
-        {/* ASK */}
         {step === "ask" && (
           <div className="screen">
             <h1>¿Quieres ser mi San Valentín? 💘</h1>
@@ -359,9 +350,7 @@ export default function App() {
               </button>
 
               {showNoToast && (
-                <div className="toast">
-                  Ya ya… entendí. Igual me gustas. Ahora aprieta “Sí” 😤❤️
-                </div>
+                <div className="toast">Ya ya… entendí. Igual me gustas. Ahora aprieta “Sí” 😤❤️</div>
               )}
             </div>
 
@@ -369,7 +358,6 @@ export default function App() {
           </div>
         )}
 
-        {/* QUIZ */}
         {step === "quiz" && (
           <div className="screen">
             <div className="pill">Desbloqueo secreto 🔐</div>
@@ -414,7 +402,6 @@ export default function App() {
           </div>
         )}
 
-        {/* YES */}
         {step === "yes" && (
           <div className="screen">
             <h1>Sabía que dirías que sí ❤️</h1>
@@ -438,8 +425,8 @@ export default function App() {
               <p className={`reveal ${reveal >= 3 ? "show" : ""}`}>
                 Y mi plan:{" "}
                 <i>
-                  pasar la tarde juntos comiendo helados (McFlurry, obvio)… y después quedarnos a
-                  dormir juntitos dos noches: <b>13 y 14 de febrero</b> 💞
+                  pasar la tarde juntos comiendo helados (McFlurry, obvio)… y después quedarnos a dormir
+                  juntitos dos noches: <b>13 y 14 de febrero</b> 💞
                 </i>
                 .
               </p>
@@ -463,18 +450,16 @@ export default function App() {
             </div>
 
             <div className={`gallery reveal ${reveal >= 4 ? "show" : ""}`}>
-              <img src="/1.jpeg" alt="recuerdo 1" />
-              <img src="/2.jpeg" alt="recuerdo 2" />
-              <img src="/3.jpeg" alt="recuerdo 3" />
+              <img src={`${BASE}1.jpeg`} alt="recuerdo 1" />
+              <img src={`${BASE}2.jpeg`} alt="recuerdo 2" />
+              <img src={`${BASE}3.jpeg`} alt="recuerdo 3" />
             </div>
 
-            {/* Audio (sin autoplay) */}
             <audio ref={audioRef} src={MUSIC_SRC} preload="auto" loop />
           </div>
         )}
       </div>
 
-      {/* MODAL REGALO */}
       {giftOpen && (
         <div className="modalBackdrop" onClick={() => setGiftOpen(false)} role="dialog" aria-modal="true">
           <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -487,7 +472,7 @@ export default function App() {
 
             <div className="modalBody">
               {REGALO.type === "video" && (
-                <video className="giftMedia" src={REGALO.src} controls autoPlay playsInline />
+                <video className="giftMedia" src={REGALO.src} controls playsInline />
               )}
 
               <p className="tiny" style={{ marginTop: 10 }}>
