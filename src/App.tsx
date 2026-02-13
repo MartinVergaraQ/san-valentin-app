@@ -474,9 +474,9 @@ export default function App() {
             </div>
 
             <div className={`gallery reveal ${reveal >= 4 ? "show" : ""}`}>
-              <img src={`${BASE}1.jpeg`} alt="recuerdo 1" />
-              <img src={`${BASE}2.jpeg`} alt="recuerdo 2" />
-              <img src={`${BASE}3.jpeg`} alt="recuerdo 3" />
+              <img src={`${BASE}cambio1.jpeg`} alt="recuerdo 1" />
+              <img src={`${BASE}cambio2.jpeg`} alt="recuerdo 2" />
+              <img src={`${BASE}cambio3.jpeg`} alt="recuerdo 3" />
             </div>
 
             <audio ref={audioRef} src={MUSIC_SRC} preload="auto" loop />
